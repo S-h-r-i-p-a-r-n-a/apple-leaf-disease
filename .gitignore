@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Node
+node_modules/
+.env
+
+# YOLOv5 Outputs
+temp/
+downloads/
+*.pt
