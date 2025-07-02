@@ -1,0 +1,38 @@
+{
+  "rust": {
+    "brief": "Use a fungicide like myclobutanil. Remove infected leaves.",
+    "title": "Apple Rust Treatment",
+    "summary": "Apple rust is a fungal disease that causes orange or rust-colored spots on leaves, leading to premature leaf drop and reduced fruit yield.",
+    "fungicides": ["Myclobutanil", "Propiconazole"],
+    "steps": [
+      "Identify and remove infected leaves from the tree.",
+      "Apply a fungicide like myclobutanil at the early stage of the infection.",
+      "Repeat the spray every 10–14 days during the growing season.",
+      "Avoid planting juniper species near apple trees, as they are alternate hosts for rust."
+    ],
+    "prevention": "Plant rust-resistant apple varieties. Maintain good air circulation by pruning and avoid overhead irrigation."
+  },
+
+  "scab": {
+    "brief": "Use captan or mancozeb sprays. Prune infected areas.",
+    "title": "Apple Scab Treatment",
+    "summary": "Apple scab is a common fungal disease that affects leaves and fruit, leaving dark spots and reducing fruit quality.",
+    "fungicides": ["Captan", "Mancozeb", "Chlorothalonil"],
+    "steps": [
+      "Remove fallen leaves and infected fruit from the ground to reduce fungal spores.",
+      "Apply captan or mancozeb sprays every 7–10 days during the growing season.",
+      "Prune the tree to allow better airflow and reduce humidity within the canopy.",
+      "Use resistant apple varieties if available."
+    ],
+    "prevention": "Ensure regular pruning and sanitation. Avoid excessive nitrogen fertilizers and provide proper drainage to minimize fungal spread."
+  },
+
+  "healthy": {
+    "brief": "No treatment needed. The leaf is healthy.",
+    "title": "Healthy Leaf",
+    "summary": "The leaf is free from visible signs of disease or damage. No treatment is currently required.",
+    "fungicides": [],
+    "steps": [],
+    "prevention": "Continue with good agricultural practices, including timely irrigation, fertilization, and routine monitoring for early detection."
+  }
+}
