@@ -20,6 +20,9 @@ app.add_middleware(
 )
 
 # Serve static files from /downloads
+if not os.path.exists("downloads"):
+    os.makedirs("downloads")
+
 app.mount("/downloads", StaticFiles(directory="downloads"), name="downloads")
 
 @app.get("/")
