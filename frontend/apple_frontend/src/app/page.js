@@ -8,8 +8,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
 
-const BASE_URL = 'https://apple-leaf-disease.onrender.com'
- // Change this to your backend URL in production
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL
+// Change this to your backend URL in production
 
   useEffect(() => {
     const root = document.documentElement
