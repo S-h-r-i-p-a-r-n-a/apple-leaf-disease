@@ -2,17 +2,17 @@ import sys, os, uuid, torch, cv2
 import platform
 import pathlib
 from pathlib import Path
-from utils.general import non_max_suppression, scale_boxes
-from utils.torch_utils import select_device
 
-# Windows fix
+# Fix for Windows
 if platform.system() == "Windows":
     pathlib.PosixPath = pathlib.WindowsPath
 
-# Add YOLOv5 path
-yolov5_path = Path(__file__).resolve().parents[2] / "yolov5"
+# Add YOLOv5 path (backend/yolov5)
+yolov5_path = Path(__file__).resolve().parents[1] / "yolov5"
 sys.path.append(str(yolov5_path))
 
+from utils.general import non_max_suppression, scale_boxes
+from utils.torch_utils import select_device
 from models.common import DetectMultiBackend
 
 # Load model
@@ -54,7 +54,6 @@ def predict_and_annotate(image_path):
                 cv2.rectangle(original, (x1, y1 - th - 10), (x1 + tw + 6, y1), (0, 255, 100), -1)
                 cv2.putText(original, label_text, (x1 + 3, y1 - 5),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-
         else:
             disease_names.add("healthy")
             disease_conf_list.append({"name": "healthy", "confidence": 1.0})
