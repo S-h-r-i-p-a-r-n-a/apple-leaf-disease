@@ -1,5 +1,7 @@
 import pathlib
 import platform
+from app.model.detect import Predictor
+
 
 # Ensure compatibility with Windows paths
 if platform.system() == "Windows":
