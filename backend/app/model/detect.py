@@ -1,23 +1,31 @@
-import sys, os, uuid, torch, cv2
+import sys
+import os
+import uuid
+import torch
+import cv2
 import platform
 import pathlib
 from pathlib import Path
 
-# Fix for Windows
+# ✅ Fix for Windows path compatibility
 if platform.system() == "Windows":
     pathlib.PosixPath = pathlib.WindowsPath
 
-# Add YOLOv5 path (backend/yolov5)
-yolov5_path = Path(__file__).resolve().parents[1] / "yolov5"
-sys.path.append(str(yolov5_path))
+# ✅ Add YOLOv5 path to Python import path
+yolov5_path = Path(__file__).resolve().parents[2] / "yolov5"
+if yolov5_path.exists():
+    sys.path.append(str(yolov5_path))
+else:
+    raise RuntimeError(f"YOLOv5 path not found at: {yolov5_path}")
 
+# ✅ Import from YOLOv5 modules
 from utils.general import non_max_suppression, scale_boxes
 from utils.torch_utils import select_device
 from models.common import DetectMultiBackend
 
-# Load model
+# ✅ Load model
 model_path = Path(__file__).parent / "apple_leaf_yolov5.pt"
-device = select_device('cpu')
+device = select_device("cpu")
 model = DetectMultiBackend(str(model_path), device=device)
 model.model.eval()
 

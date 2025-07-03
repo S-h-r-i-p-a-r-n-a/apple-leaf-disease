@@ -7,6 +7,7 @@ export default function Home() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
+  const [error, setError] = useState(null)
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 
@@ -22,6 +23,7 @@ export default function Home() {
       setImage(file)
       setPreview(URL.createObjectURL(file))
       setResult(null)
+      setError(null)
     }
   }
 
@@ -29,12 +31,15 @@ export default function Home() {
     setImage(null)
     setPreview(null)
     setResult(null)
+    setError(null)
     document.querySelector('input[type="file"]').value = ''
   }
 
   const handleUpload = async () => {
     if (!image) return
     setLoading(true)
+    setError(null)
+
     const formData = new FormData()
     formData.append('file', image)
 
@@ -48,7 +53,7 @@ export default function Home() {
       const data = await res.json()
       setResult(data)
     } catch {
-      alert('Upload failed. Please try again.')
+      setError('Upload failed. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -101,13 +106,20 @@ export default function Home() {
           </div>
         )}
 
+        {/* Error Message */}
+        {error && (
+          <div className="text-red-600 font-semibold text-center mt-4">{error}</div>
+        )}
+
         {/* Upload Button */}
         <div className="text-center">
           <button
             onClick={handleUpload}
-            disabled={loading}
+            disabled={!image || loading}
             className={`mt-4 px-6 py-2 rounded text-white font-medium transition ${
-              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
+              loading || !image
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-600 hover:bg-green-700'
             }`}
           >
             {loading ? 'Processing...' : 'Upload & Predict'}
@@ -136,7 +148,7 @@ export default function Home() {
 
               <div className="text-center">
                 <a
-                  href={`${BASE_URL}/download/${result.annotated_image?.split('/').pop()}`}
+                  href={`${BASE_URL}${result.annotated_image}`}
                   download
                   className="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg shadow-md transition duration-300 hover:bg-green-700 hover:scale-105"
                 >
