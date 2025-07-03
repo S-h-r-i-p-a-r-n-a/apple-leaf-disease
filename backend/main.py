@@ -3,14 +3,14 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import os, shutil, uuid, logging
-from app.model.detect import predict_and_annotate
+
+# Import once and load model on startup
+from app.model.detect import Predictor
 
 app = FastAPI()
-
-# Enable logging
 logging.basicConfig(level=logging.INFO)
 
-# Enable CORS (adjust for production)
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -19,11 +19,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files from /downloads
+# Serve downloads
 if not os.path.exists("downloads"):
     os.makedirs("downloads")
-
 app.mount("/downloads", StaticFiles(directory="downloads"), name="downloads")
+
+# Load model only once
+predictor = Predictor()
 
 @app.get("/")
 def root():
@@ -31,23 +33,17 @@ def root():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    # Check extension
     if not file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
         raise HTTPException(status_code=400, detail="Only .jpg/.jpeg/.png files are allowed")
 
     os.makedirs("temp", exist_ok=True)
-    os.makedirs("downloads", exist_ok=True)
-
-    # Save uploaded file to temp
     temp_path = f"temp/{uuid.uuid4()}_{file.filename}"
     try:
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Run prediction
-        image_path, report_json, _, _, disease_confidence_list = predict_and_annotate(temp_path)
+        image_path, report_json, _, _, disease_confidence_list = predictor.annotate(temp_path)
 
-        # Return response with specific names for the annotated image
         return {
             "detected_diseases": disease_confidence_list,
             "treatment_report": report_json,
@@ -57,7 +53,6 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         logging.exception("Prediction failed")
         raise HTTPException(status_code=500, detail="Prediction failed")
-
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
@@ -68,18 +63,13 @@ async def generate_full_report(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Only .jpg/.jpeg/.png files are allowed")
 
     os.makedirs("temp", exist_ok=True)
-    os.makedirs("downloads", exist_ok=True)
-
     temp_path = f"temp/{uuid.uuid4()}_{file.filename}"
-
     try:
         with open(temp_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
-        # Get image, brief_report, PDF path, audio path, confidence list
-        image_path, report_json, pdf_path, audio_path, disease_confidence_list = predict_and_annotate(temp_path)
+        image_path, report_json, pdf_path, audio_path, disease_confidence_list = predictor.annotate(temp_path)
 
-        # Return response with specific names for the PDF, audio, and annotated image
         return {
             "detected_diseases": disease_confidence_list,
             "treatment_report": report_json,
@@ -91,7 +81,6 @@ async def generate_full_report(file: UploadFile = File(...)):
     except Exception as e:
         logging.exception("Report generation failed")
         raise HTTPException(status_code=500, detail="Report generation failed")
-
     finally:
         if os.path.exists(temp_path):
             os.remove(temp_path)
