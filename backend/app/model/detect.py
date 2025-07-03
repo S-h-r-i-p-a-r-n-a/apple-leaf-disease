@@ -168,3 +168,7 @@ def predict_and_annotate(image_path):
     except Exception as e:
         print(f"Error during prediction: {e}")
         raise
+
+class Predictor:
+    def __init__(self):
+        self.annotate = predict_and_annotate
