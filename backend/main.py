@@ -12,7 +12,10 @@ logging.basicConfig(level=logging.INFO)
 # ✅ Enable CORS (Allow all origins for development)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with specific origin(s) in production
+     allow_origins=[
+    "https://apple-leaf-disease.vercel.app",  # ✅ Your Vercel frontend
+    "http://localhost:3000"  # (optional) for local development
+    ],  # Replace with specific origin(s) in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
